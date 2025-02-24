@@ -6,6 +6,8 @@ const FaceLogin = () => {
   const canvasRef = useRef(null);
   const [status, setStatus] = useState("Carregando modelos...");
   const [registeredDescriptor, setRegisteredDescriptor] = useState(null);
+  const [devices, setDevices] = useState([]); // Lista de câmeras
+  const [selectedDeviceId, setSelectedDeviceId] = useState(""); // Câmera selecionada
 
   useEffect(() => {
     const loadModels = async () => {
@@ -15,8 +17,8 @@ const FaceLogin = () => {
       await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
       await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
 
-      setStatus("Modelos carregados! Iniciando câmera...");
-      startVideo();
+      setStatus("Modelos carregados! Selecione uma câmera.");
+      getDevices(); // Buscar lista de webcams
     };
 
     loadModels();
@@ -29,14 +31,42 @@ const FaceLogin = () => {
     }
   }, []);
 
-  const startVideo = async () => {
+  // Obtém a lista de dispositivos de vídeo (câmeras)
+  const getDevices = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      videoRef.current.srcObject = stream;
+      const mediaDevices = await navigator.mediaDevices.enumerateDevices();
+      const videoDevices = mediaDevices.filter(device => device.kind === "videoinput");
+      setDevices(videoDevices);
+      
+      if (videoDevices.length > 0) {
+        setSelectedDeviceId(videoDevices[0].deviceId); // Define a primeira câmera como padrão
+      }
+    } catch (error) {
+      console.error("Erro ao listar dispositivos:", error);
+    }
+  };
+
+  // Inicia a câmera com o dispositivo selecionado
+  const startVideo = async (deviceId) => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { deviceId: { exact: deviceId } }
+      });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+      setStatus("Câmera iniciada! Posicione seu rosto na tela.");
     } catch (err) {
       console.error("Erro ao acessar a câmera:", err);
       setStatus("Erro ao acessar a câmera");
     }
+  };
+
+  // Função para alterar a câmera selecionada
+  const handleChangeDevice = (event) => {
+    const newDeviceId = event.target.value;
+    setSelectedDeviceId(newDeviceId);
+    startVideo(newDeviceId); // Reinicia o vídeo com a nova câmera
   };
 
   const registerFace = async () => {
@@ -86,7 +116,22 @@ const FaceLogin = () => {
       <h2>Login por Reconhecimento Facial</h2>
       <p>{status}</p>
 
-      <div style={{ position: "relative", display: "inline-block" }}>
+      {/* Dropdown para selecionar a câmera */}
+      <div>
+        <label>Selecione a Câmera: </label>
+        <select value={selectedDeviceId} onChange={handleChangeDevice} style={{ marginBottom: "10px", padding: "5px" }}>
+          {devices.map((device, index) => (
+            <option key={index} value={device.deviceId}>
+              {device.label || `Câmera ${index + 1}`}
+            </option>
+          ))}
+        </select>
+        <button onClick={() => startVideo(selectedDeviceId)} style={{ marginLeft: "10px", padding: "5px" }}>
+          Iniciar Câmera
+        </button>
+      </div>
+
+      <div style={{ position: "relative", display: "inline-block", marginTop: "10px" }}>
         <video
           ref={videoRef}
           autoPlay
