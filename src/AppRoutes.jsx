@@ -23,7 +23,6 @@ function AppRoutes() {
 
     return (
         <Box sx={{ display: 'flex', height: '100vh' }}>
-            {!hideSidebar && <Sidebar open={open} handleToggle={handleToggle} />}
             <Box
                 component="main"
                 sx={{
@@ -37,9 +36,10 @@ function AppRoutes() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/logout" element={<Logout />} />
                     <Route
-                        path="/home"
+                        path="/"
                         element={
                             <ProtectedRoute>
+                                <Sidebar open={open} handleToggle={handleToggle} />
                                 <Home />
                             </ProtectedRoute>
                         }
@@ -48,6 +48,7 @@ function AppRoutes() {
                         path="/search"
                         element={
                             <ProtectedRoute>
+                                <Sidebar open={open} handleToggle={handleToggle} />
                                 <Search />
                             </ProtectedRoute>
                         }
@@ -56,11 +57,12 @@ function AppRoutes() {
                         path="/access"
                         element={
                             <ProtectedRoute>
+                                <Sidebar open={open} handleToggle={handleToggle} />
                                 <Access />
                             </ProtectedRoute>
                         }
                     />
-                    <Route path="*" element={<Navigate to="/home" replace />} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </Box>
         </Box>

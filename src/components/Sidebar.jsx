@@ -18,7 +18,7 @@ const Sidebar = ({ open, handleToggle }) => {
 
     const menuItems = [
         { text: 'Recursos', type: 'header' },
-        { text: 'Nova Requisição', icon: <AddIcon />, path: '/home' },
+        { text: 'Nova Requisição', icon: <AddIcon />, path: '/' },
         { text: 'Consultar Requisições', icon: <SearchIcon />, path: '/search' },
         { type: 'divider' },
         { text: 'Configurações', type: 'header' },
