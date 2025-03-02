@@ -25,7 +25,7 @@ const Sidebar = ({ open, handleToggle }) => {
     const location = useLocation();
     const { user } = useAuth();
     const { mode, toggleTheme } = useThemeContext();
-    const theme = useTheme(); // Obtém o tema atual do MUI
+    const theme = useTheme();
 
     const menuItems = [
         { type: 'item', text: 'Início', icon: <HomeIcon />, path: '/', permissions: '*' },
@@ -49,9 +49,10 @@ const Sidebar = ({ open, handleToggle }) => {
                     width: open ? drawerWidth : collapsedWidth,
                     transition: 'width 0.3s ease-in-out',
                     overflowX: 'hidden',
-                    bgcolor: theme.palette.background.default, // Respeita o tema
-                    color: theme.palette.text.primary, // Texto ajusta com tema
-                    paddingX: open ? 1 : 0
+                    bgcolor: mode === 'dark' ? '#1E1E1E' : '#F4F4F4',
+                    color: theme.palette.text.primary,
+                    paddingX: open ? 1 : 0,
+                    borderRight: `1px solid ${mode === 'dark' ? '#333' : '#DDD'}`
                 },
             }}
         >
@@ -112,8 +113,10 @@ const Sidebar = ({ open, handleToggle }) => {
                                 onClick={() => navigate(item.path)}
                                 sx={{
                                     justifyContent: open ? 'flex-start' : 'center',
-                                    bgcolor: location.pathname === item.path ? theme.palette.action.selected : 'transparent',
-                                    '&:hover': { bgcolor: theme.palette.action.hover },
+                                    bgcolor: location.pathname === item.path
+                                        ? (mode === 'dark' ? '#444' : '#DDD')
+                                        : 'transparent',
+                                    '&:hover': { bgcolor: mode === 'dark' ? '#555' : '#EEE' },
                                     borderRadius: '6px',
                                     mx: open ? 1 : 0.5,
                                     my: 0.5,

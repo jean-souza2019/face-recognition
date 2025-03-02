@@ -17,7 +17,7 @@ function Login() {
         }
 
         setError('');
-        login({ email, password, role: "common"});
+        login({ email, password, role: "admin"});
     };
 
     useEffect(() => {
