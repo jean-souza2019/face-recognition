@@ -1,5 +1,8 @@
 import React from 'react';
-import { Drawer, List, ListItemButton, ListItemIcon, ListItemText, Divider, IconButton, Typography, Tooltip, Box } from '@mui/material';
+import {
+    Drawer, List, ListItemButton, ListItemIcon, ListItemText, Divider, IconButton,
+    Typography, Tooltip, Box
+} from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -8,7 +11,11 @@ import HomeIcon from '@mui/icons-material/Home';
 import SearchIcon from '@mui/icons-material/Search';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import LogoutIcon from '@mui/icons-material/Logout';
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { useAuth } from "../context/AuthProvider";
+import { useThemeContext } from '../context/ThemeContext';
+import { useTheme } from '@mui/material/styles';
 
 const drawerWidth = 240;
 const collapsedWidth = 64;
@@ -17,18 +24,18 @@ const Sidebar = ({ open, handleToggle }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const { user } = useAuth();
+    const { mode, toggleTheme } = useThemeContext();
+    const theme = useTheme(); // Obtém o tema atual do MUI
 
     const menuItems = [
-        { type: 'item', text: 'Home', icon: <HomeIcon />, path: '/', permissions: '*' },
+        { type: 'item', text: 'Início', icon: <HomeIcon />, path: '/', permissions: '*' },
         { type: 'header', text: 'Recursos', permissions: '*' },
-            { type: 'item', text: 'Nova Requisição', icon: <AddIcon />, path: '/request', permissions: ['admin', 'manager'] },
-            { type: 'item', text: 'Consultar Requisições', icon: <SearchIcon />, path: '/search', permissions: ['common', 'admin', 'manager'] },
+        { type: 'item', text: 'Nova Requisição', icon: <AddIcon />, path: '/request', permissions: ['admin', 'manager'] },
+        { type: 'item', text: 'Consultar Requisições', icon: <SearchIcon />, path: '/search', permissions: ['common', 'admin', 'manager'] },
         { type: 'divider', permissions: ['admin', 'manager'] },
-        
         { type: 'header', text: 'Configurações', permissions: ['admin'] },
-            { type: 'item', text: 'Gerenciamento de Acessos', icon: <ManageAccountsIcon />, path: '/access', permissions: ['admin']},
+        { type: 'item', text: 'Gerenciamento de Acessos', icon: <ManageAccountsIcon />, path: '/access', permissions: ['admin'] },
         { type: 'divider', permissions: ['admin'] },
-        
         { type: 'item', text: 'Sair', icon: <LogoutIcon />, path: '/logout', permissions: '*' },
     ];
 
@@ -42,37 +49,37 @@ const Sidebar = ({ open, handleToggle }) => {
                     width: open ? drawerWidth : collapsedWidth,
                     transition: 'width 0.3s ease-in-out',
                     overflowX: 'hidden',
-                    backgroundColor: '#121212',
-                    color: '#fff',
-                    borderRight: '1px solid #333',
+                    bgcolor: theme.palette.background.default, // Respeita o tema
+                    color: theme.palette.text.primary, // Texto ajusta com tema
                     paddingX: open ? 1 : 0
                 },
             }}
         >
-
+            {/* Cabeçalho do Sidebar */}
             <Box
                 sx={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: open ? 'space-between' : 'center',
                     padding: open ? '12px 16px' : '8px',
-                    backgroundColor: '#1a1a1a',
+                    bgcolor: theme.palette.background.paper,
                 }}
             >
                 {open && (
-                    <Typography variant="h6" sx={{ color: 'white', fontSize: '15px' }}>
+                    <Typography variant="h6" sx={{ fontSize: '15px' }}>
                         REQUISIÇÕES EPI
                     </Typography>
                 )}
-                <IconButton sx={{ color: 'white', p: open ? '6px' : '4px' }} onClick={handleToggle}>
+                <IconButton sx={{ p: open ? '6px' : '4px' }} onClick={handleToggle}>
                     <motion.div animate={{ rotate: open ? 0 : 180 }} transition={{ duration: 0.3 }}>
                         <ChevronLeftIcon />
                     </motion.div>
                 </IconButton>
             </Box>
-            <Divider sx={{ backgroundColor: '#333' }} />
+            <Divider />
 
-            <List sx={{ padding: open ? '8px' : '4px' }}>
+            {/* Lista de Itens do Menu */}
+            <List sx={{ padding: open ? '8px' : '4px', flexGrow: 1 }}>
                 {menuItems.map((item, index) => {
                     if (item.permissions !== '*' && !item.permissions?.includes(user.role)) return null;
 
@@ -84,7 +91,7 @@ const Sidebar = ({ open, handleToggle }) => {
                                     px: 2,
                                     py: 1,
                                     fontSize: 12,
-                                    color: '#aaa',
+                                    color: theme.palette.text.secondary,
                                     fontWeight: 'bold',
                                     textTransform: 'uppercase',
                                 }}
@@ -95,7 +102,7 @@ const Sidebar = ({ open, handleToggle }) => {
                     }
 
                     if (item.type === 'divider') {
-                        return <Divider key={index} sx={{ my: 1, backgroundColor: '#333' }} />;
+                        return <Divider key={index} sx={{ my: 1 }} />;
                     }
 
                     return (
@@ -105,8 +112,8 @@ const Sidebar = ({ open, handleToggle }) => {
                                 onClick={() => navigate(item.path)}
                                 sx={{
                                     justifyContent: open ? 'flex-start' : 'center',
-                                    backgroundColor: location.pathname === item.path ? '#333' : 'transparent',
-                                    '&:hover': { backgroundColor: '#222' },
+                                    bgcolor: location.pathname === item.path ? theme.palette.action.selected : 'transparent',
+                                    '&:hover': { bgcolor: theme.palette.action.hover },
                                     borderRadius: '6px',
                                     mx: open ? 1 : 0.5,
                                     my: 0.5,
@@ -114,7 +121,7 @@ const Sidebar = ({ open, handleToggle }) => {
                                     px: open ? 2 : 1
                                 }}
                             >
-                                <ListItemIcon sx={{ color: location.pathname === item.path ? '#00bcd4' : 'white', minWidth: open ? 40 : 30 }}>
+                                <ListItemIcon sx={{ minWidth: open ? 40 : 30, color: theme.palette.text.primary }}>
                                     {item.icon}
                                 </ListItemIcon>
                                 {open && <ListItemText primary={item.text} />}
@@ -123,6 +130,15 @@ const Sidebar = ({ open, handleToggle }) => {
                     );
                 })}
             </List>
+
+            {/* Botão de alternância de tema fixado no rodapé */}
+            <Box sx={{ position: 'absolute', bottom: 10, width: '100%', textAlign: 'center' }}>
+                <Tooltip title="Alternar tema">
+                    <IconButton onClick={toggleTheme} sx={{ color: theme.palette.text.primary }}>
+                        {mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
+                    </IconButton>
+                </Tooltip>
+            </Box>
         </Drawer>
     );
 };
