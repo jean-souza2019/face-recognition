@@ -17,7 +17,7 @@ function Login() {
         }
 
         setError('');
-        login(); // Simula o login
+        login({ email, password, role: "common"});
     };
 
     useEffect(() => {

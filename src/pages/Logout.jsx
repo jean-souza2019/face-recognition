@@ -3,13 +3,13 @@ import { useAuth } from '../context/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import { Box, CircularProgress } from '@mui/material';
 
-function Logou() {
+function Logout() {
     const { logout } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
-        logout(); // Realiza o logout
-        navigate('/login', { replace: true }); // Redireciona para login
+        logout();
+        navigate('/login', { replace: true });
     }, [logout, navigate]);
 
     return (
@@ -26,4 +26,4 @@ function Logou() {
     );
 }
 
-export default Logou;
+export default Logout;

@@ -3,11 +3,12 @@ import { Drawer, List, ListItemButton, ListItemIcon, ListItemText, Divider, Icon
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import AddIcon from '@mui/icons-material/Add';
+import HomeIcon from '@mui/icons-material/Home';
 import SearchIcon from '@mui/icons-material/Search';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { useAuth } from "../context/AuthProvider";
 
 const drawerWidth = 240;
 const collapsedWidth = 64;
@@ -15,16 +16,20 @@ const collapsedWidth = 64;
 const Sidebar = ({ open, handleToggle }) => {
     const navigate = useNavigate();
     const location = useLocation();
+    const { user } = useAuth();
 
     const menuItems = [
-        { text: 'Recursos', type: 'header' },
-        { text: 'Nova Requisição', icon: <AddIcon />, path: '/' },
-        { text: 'Consultar Requisições', icon: <SearchIcon />, path: '/search' },
-        { type: 'divider' },
-        { text: 'Configurações', type: 'header' },
-        { text: 'Gerenciamento de Acessos', icon: <ManageAccountsIcon />, path: '/access' },
-        { type: 'divider' },
-        { text: 'Sair', icon: <LogoutIcon />, path: '/logout' },
+        { type: 'item', text: 'Home', icon: <HomeIcon />, path: '/', permissions: '*' },
+        { type: 'header', text: 'Recursos', permissions: '*' },
+            { type: 'item', text: 'Nova Requisição', icon: <AddIcon />, path: '/request', permissions: ['admin', 'manager'] },
+            { type: 'item', text: 'Consultar Requisições', icon: <SearchIcon />, path: '/search', permissions: ['common', 'admin', 'manager'] },
+        { type: 'divider', permissions: ['admin', 'manager'] },
+        
+        { type: 'header', text: 'Configurações', permissions: ['admin'] },
+            { type: 'item', text: 'Gerenciamento de Acessos', icon: <ManageAccountsIcon />, path: '/access', permissions: ['admin']},
+        { type: 'divider', permissions: ['admin'] },
+        
+        { type: 'item', text: 'Sair', icon: <LogoutIcon />, path: '/logout', permissions: '*' },
     ];
 
     return (
@@ -61,7 +66,7 @@ const Sidebar = ({ open, handleToggle }) => {
                 )}
                 <IconButton sx={{ color: 'white', p: open ? '6px' : '4px' }} onClick={handleToggle}>
                     <motion.div animate={{ rotate: open ? 0 : 180 }} transition={{ duration: 0.3 }}>
-                        <ChevronLeftIcon /> 
+                        <ChevronLeftIcon />
                     </motion.div>
                 </IconButton>
             </Box>
@@ -69,6 +74,8 @@ const Sidebar = ({ open, handleToggle }) => {
 
             <List sx={{ padding: open ? '8px' : '4px' }}>
                 {menuItems.map((item, index) => {
+                    if (item.permissions !== '*' && !item.permissions?.includes(user.role)) return null;
+
                     if (item.type === 'header') {
                         return open ? (
                             <Typography

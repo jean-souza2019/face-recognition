@@ -1,10 +1,10 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthProvider';
 import { Box, CircularProgress } from '@mui/material';
 
-function ProtectedRoute({ children }) {
-    const { isAuthenticated, loading } = useAuth();
+function PrivateRoute({ allowedRoles }) {
+    const { user, isAuthenticated, loading } = useAuth();
 
     if (loading) {
         return (
@@ -13,7 +13,7 @@ function ProtectedRoute({ children }) {
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    height: '100vh', // Ocupa a tela toda para centralizar
+                    height: '100vh'
                 }}
             >
                 <CircularProgress size={50} />
@@ -21,7 +21,10 @@ function ProtectedRoute({ children }) {
         );
     }
 
-    return isAuthenticated ? children : <Navigate to="/login" replace />;
+    if (!user || !isAuthenticated) return <Navigate to="/login" />;
+    if (!allowedRoles.includes(user.role)) return <Navigate to="/" />;
+
+    return <Outlet />;
 }
 
-export default ProtectedRoute;
+export default PrivateRoute;
