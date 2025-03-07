@@ -7,6 +7,7 @@ import SearchPage from '../pages/Search';
 import AccessPage from '../pages/Access';
 import LoginPage from '../pages/Login';
 import LogoutPage from '../pages/Logout';
+import FaceLoginPage from '../pages/FaceLogin';
 import Sidebar from '../components/Sidebar';
 import { Box } from '@mui/material';
 
@@ -51,7 +52,7 @@ function AppRoutes() {
                         <Route path="/request" element={
                             <>
                                 <Sidebar open={open} handleToggle={handleToggle} />
-                                <RequestPage />
+                                <FaceLoginPage />
                             </>
                         } />
                     </Route>
