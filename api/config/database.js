@@ -3,43 +3,43 @@ const DBSOURCE = "db.sqlite";
 
 const db = new sqlite3.Database(DBSOURCE, (err) => {
   if (err) {
-    console.error("Erro ao conectar com o banco de dados:", err.message);
+    console.error("Error connecting to the database:", err.message);
     throw err;
   } else {
-    console.log('Conectado ao banco de dados SQLite.');
-    // Tabela de Grupos de Acesso
+    console.log('Connected to the SQLite database.');
     db.run(
       `CREATE TABLE IF NOT EXISTS access_groups (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL,
-        permissao TEXT NOT NULL,
+        name TEXT NOT NULL,
+        permission TEXT NOT NULL,
         status TEXT NOT NULL
       )`,
       (err) => {
         if (err) {
-          console.error("Erro ao criar tabela access_groups:", err.message);
+          console.error("Error creating access_groups table:", err.message);
         } else {
-          console.log("Tabela access_groups pronta.");
+          console.log("access_groups table ready.");
         }
       }
     );
-    // Tabela de Usuários
+
     db.run(
       `CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL,
+        name TEXT NOT NULL,
         login TEXT NOT NULL UNIQUE,
-        senha TEXT NOT NULL,
-        permissao TEXT NOT NULL,
+        password TEXT NOT NULL,
+        permission TEXT NOT NULL,
         status TEXT NOT NULL,
-        grupo_id INTEGER,
-        FOREIGN KEY (grupo_id) REFERENCES access_groups(id)
+        group_id INTEGER,
+        token_version INTEGER DEFAULT 0,
+        FOREIGN KEY (group_id) REFERENCES access_groups(id)
       )`,
       (err) => {
         if (err) {
-          console.error("Erro ao criar tabela users:", err.message);
+          console.error("Error creating users table:", err.message);
         } else {
-          console.log("Tabela users pronta.");
+          console.log("users table ready.");
         }
       }
     );
