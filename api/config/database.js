@@ -7,6 +7,7 @@ const db = new sqlite3.Database(DBSOURCE, (err) => {
     throw err;
   } else {
     console.log('Connected to the SQLite database.');
+
     db.run(
       `CREATE TABLE IF NOT EXISTS access_groups (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,6 +41,23 @@ const db = new sqlite3.Database(DBSOURCE, (err) => {
           console.error("Error creating users table:", err.message);
         } else {
           console.log("users table ready.");
+        }
+      }
+    );
+
+    db.run(
+      `CREATE TABLE IF NOT EXISTS face_data (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        descriptor TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id)
+      )`,
+      (err) => {
+        if (err) {
+          console.error("Error creating face_data table:", err.message);
+        } else {
+          console.log("face_data table ready.");
         }
       }
     );

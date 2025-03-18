@@ -5,8 +5,8 @@ const doc = {
     title: 'API Documentation',
     description: 'Automatically generated API documentation',
   },
-  host: 'localhost:3000',
-  schemes: ['http'],
+  host: '192.168.18.10:3000/api',
+  schemes: ['http', 'https'],
 };
 
 const outputFile = './swagger-output.json';
