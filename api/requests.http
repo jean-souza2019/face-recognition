@@ -1,0 +1,60 @@
+@URL_GLOBAL=http://localhost:3000/api
+@TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJhZG1pbiIsInRva2VuVmVyc2lvbiI6MywiaWF0IjoxNzQzMzY3MTA4LCJleHAiOjE3NDMzNzA3MDh9.5ACLPKlfyGGwpL3mzkil7eLHf6sz47Q0XuAoSf1DmcM
+
+### Registro de novo usuário
+POST {{URL_GLOBAL}}/register
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "login": "johndoe",
+  "password": "secure123",
+  "permission": "admin",
+  "status": "active",
+  "group_id": 1
+}
+
+###
+
+### Login de usuário
+POST {{URL_GLOBAL}}/login
+Content-Type: application/json
+
+{
+  "login": "admin",
+  "password": "aadmin"
+}
+
+###
+
+### Buscar todos os usuários
+GET {{URL_GLOBAL}}/users
+Accept: application/json
+
+###
+
+### Atualizar um usuário
+PUT {{URL_GLOBAL}}/users/1
+Content-Type: application/json
+
+{
+  "name": "John Doe Updated",
+  "login": "johnupdated",
+  "password": "newpass123",
+  "permission": "user",
+  "status": "inactive",
+  "group_id": 2
+}
+
+###
+
+### Deletar um usuário
+DELETE {{URL_GLOBAL}}/users/1
+Accept: application/json
+
+###
+
+### Buscar modelo facial pelo nome
+GET {{URL_GLOBAL}}/models/age_gender_model-shard1
+Accept: application/octet-stream
+authorization: Bearer {{TOKEN}}
