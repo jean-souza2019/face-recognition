@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import PrivateRoute from '../components/PrivateRoute';
 import HomePage from '../pages/Home';
-import RequestPage from '../pages/Request';
 import SearchPage from '../pages/Search';
 import AccessPage from '../pages/Access';
+import AccessGroupsPage from '../pages/AccessGroups';
 import LoginPage from '../pages/Login';
 import LogoutPage from '../pages/Logout';
 import FaceLoginPage from '../pages/FaceLogin';
@@ -73,6 +73,15 @@ function AppRoutes() {
                             <>
                                 <Sidebar open={open} handleToggle={handleToggle} />
                                 <AccessPage />
+                            </>
+                        } />
+                    </Route>
+
+                    <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
+                        <Route path="/groups" element={
+                            <>
+                                <Sidebar open={open} handleToggle={handleToggle} />
+                                <AccessGroupsPage />
                             </>
                         } />
                     </Route>

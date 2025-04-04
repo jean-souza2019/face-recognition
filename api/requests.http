@@ -21,8 +21,8 @@ POST {{URL_GLOBAL}}/login
 Content-Type: application/json
 
 {
-  "login": "admin",
-  "password": "aadmin"
+  "login": "testes",
+  "password": "testando"
 }
 
 ###
@@ -58,3 +58,9 @@ Accept: application/json
 GET {{URL_GLOBAL}}/models/age_gender_model-shard1
 Accept: application/octet-stream
 authorization: Bearer {{TOKEN}}
+
+### Buscar todos os grupos
+GET {{URL_GLOBAL}}/groups
+Accept: application/json
+
+###

@@ -25,7 +25,7 @@ class AuthController {
     try {
       const user = await this.userUseCase.loginUser({ login, password });
       const token = jwt.sign(
-        { id: user.id, login: user.login, tokenVersion: user.token_version },
+        { id: user.id, login: user.login, role: user.permission, tokenVersion: user.token_version },
         'my_secret_key',
         { expiresIn: '1h' }
       );

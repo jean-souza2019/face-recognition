@@ -22,7 +22,8 @@ function PrivateRoute({ allowedRoles }) {
     }
 
     if (!user || !isAuthenticated) return <Navigate to="/login" />;
-    if (!allowedRoles.includes(user.role)) return <Navigate to="/" />;
+
+    if (!allowedRoles.includes(String(user.role).toLowerCase())) return <Navigate to="/" />;
 
     return <Outlet />;
 }

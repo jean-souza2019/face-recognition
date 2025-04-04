@@ -8,51 +8,44 @@ import {
   CircularProgress,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import GroupIcon from "@mui/icons-material/Group";
 import EditIcon from "@mui/icons-material/Edit";
 import DynamicTable from "../components/DynamicTable";
-import useUsersData from "../hooks/useUsersData";
-import AccessModal from "../components/AccessModal"; // ajuste o path conforme sua estrutura
+import useAccessGroupsData from "../hooks/useAccessGroupsData";
+import AccessGroupModal from "../components/AccessGroupModal"; 
 
-function Access() {
-  const { getUsers, users, isLoading, registerUser, updateUser } = useUsersData();
+function AccessGroups() {
+  const { getGroups, groups, isLoading, registerGroup, updateGroup } = useAccessGroupsData();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
 
   useEffect(() => {
-    getUsers();
+    getGroups();
   }, []);
 
   const headers = [
     { label: "ID", field: "id" },
     { label: "Nome", field: "name" },
-    { label: "Login", field: "login" },
     { label: "Permissão", field: "permission" },
     { label: "Status", field: "status" },
   ];
-
-  const formattedUsers = users.map((user) => ({
-    id: user.id,
-    name: user.name || "N/A",
-    login: user.login || "N/A",
-    permission: user.permission || "Desconhecida",
-    status: user.status === "active" ? "Ativo" : "Inativo",
+  
+  const formattedGroups = groups.map((group) => ({
+    id: group.id,
+    name: group.name || "N/A",
+    permission: group.permission || "—",
+    status: group.status == 1 ? "Ativo" : "Inativo",
   }));
-
+  
   const handleSubmit = async (formData) => {
     if (editData) {
-      const data = { ...formData };
-      if (!data.password) {
-        delete data.password;
-      }
-  
-      await updateUser(editData.id, data);
+      await updateGroup(editData.id, formData);
     } else {
-      await registerUser(formData);
+      await registerGroup(formData);
     }
-  
-    await getUsers();
+
+    await getGroups();
     setModalOpen(false);
   };
 
@@ -60,10 +53,10 @@ function Access() {
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Box display="flex" alignItems="center" justifyContent="space-between" mb={3}>
         <Typography variant="h4" component="h1" fontWeight="bold">
-          <ManageAccountsIcon sx={{ fontSize: 40, verticalAlign: "middle", mr: 1 }} />
-          Controle de Acessos
+          <GroupIcon sx={{ fontSize: 40, verticalAlign: "middle", mr: 1 }} />
+          Grupos de Acesso
         </Typography>
-        <Tooltip title="Novo Acesso">
+        <Tooltip title="Novo Grupo">
           <Button
             variant="contained"
             color="primary"
@@ -73,7 +66,7 @@ function Access() {
               setModalOpen(true);
             }}
           >
-            Novo Acesso
+            Novo Grupo
           </Button>
         </Tooltip>
       </Box>
@@ -85,15 +78,15 @@ function Access() {
       ) : (
         <DynamicTable
           headers={headers}
-          data={formattedUsers}
+          data={formattedGroups}
           actions={(row) => (
-            <Tooltip title="Editar Registro">
+            <Tooltip title="Editar Grupo">
               <Button
                 variant="contained"
                 sx={{ minWidth: "40px", padding: "5px" }}
                 onClick={() => {
-                  const originalUser = users.find((u) => u.id === row.id);
-                  setEditData(originalUser);
+                  const originalGroup = groups.find((g) => g.id === row.id);
+                  setEditData(originalGroup);
                   setModalOpen(true);
                 }}
               >
@@ -104,7 +97,7 @@ function Access() {
         />
       )}
 
-      <AccessModal
+      <AccessGroupModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         mode={editData ? "edit" : "create"}
@@ -115,4 +108,4 @@ function Access() {
   );
 }
 
-export default Access;
+export default AccessGroups;

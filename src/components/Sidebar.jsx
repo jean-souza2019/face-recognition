@@ -10,6 +10,7 @@ import AddIcon from '@mui/icons-material/Add';
 import HomeIcon from '@mui/icons-material/Home';
 import SearchIcon from '@mui/icons-material/Search';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import GroupsIcon from '@mui/icons-material/Groups';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
@@ -35,6 +36,7 @@ const Sidebar = ({ open, handleToggle }) => {
         { type: 'divider', permissions: ['admin', 'manager'] },
         { type: 'header', text: 'Configurações', permissions: ['admin'] },
         { type: 'item', text: 'Gerenciamento de Acessos', icon: <ManageAccountsIcon />, path: '/access', permissions: ['admin'] },
+        { type: 'item', text: 'Gerenciamento de Grupos', icon: <GroupsIcon />, path: '/groups', permissions: ['admin'] },
         { type: 'divider', permissions: ['admin'] },
         { type: 'item', text: 'Sair', icon: <LogoutIcon />, path: '/logout', permissions: '*' },
     ];
@@ -82,7 +84,7 @@ const Sidebar = ({ open, handleToggle }) => {
             {/* Lista de Itens do Menu */}
             <List sx={{ padding: open ? '8px' : '4px', flexGrow: 1 }}>
                 {menuItems.map((item, index) => {
-                    if (item.permissions !== '*' && !item.permissions?.includes(user.role)) return null;
+                    if (item.permissions !== '*' && !item.permissions?.includes(String(user.role).toLowerCase())) return null;
 
                     if (item.type === 'header') {
                         return open ? (

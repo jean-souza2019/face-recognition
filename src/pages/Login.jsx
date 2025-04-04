@@ -6,18 +6,21 @@ import { TextField, Button, Box, Typography, Container, Paper } from '@mui/mater
 function Login() {
     const { isAuthenticated, login } = useAuth();
     const navigate = useNavigate();
-    const [email, setEmail] = useState('');
+    const [loginValue, setLoginValue] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const handleLogin = () => {
-        if (!email || !password) {
+    const handleLogin = async () => {
+        if (!loginValue || !password) {
             setError('Preencha todos os campos.');
             return;
         }
 
-        setError('');
-        login({ email, password, role: "admin"});
+        try {
+            await login({ login: loginValue, password });
+        } catch (err) {
+            setError(err.message || 'Erro ao fazer login');
+        }
     };
 
     useEffect(() => {
@@ -37,14 +40,13 @@ function Login() {
                 </Typography>
                 <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <TextField
-                        label="E-mail"
+                        label="Login"
                         variant="outlined"
                         fullWidth
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        error={!!error && !email}
-                        helperText={!!error && !email ? 'E-mail é obrigatório' : ''}
+                        value={loginValue}
+                        onChange={(e) => setLoginValue(e.target.value)}
+                        error={!!error && !loginValue}
+                        helperText={!!error && !loginValue ? 'Login é obrigatório' : ''}
                     />
                     <TextField
                         label="Senha"
